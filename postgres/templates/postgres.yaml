@@ -1,0 +1,88 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: postgres
+  namespace: {{ .Values.common.namespace }}
+  labels:
+    app: postgres
+spec:
+  replicas: {{ .Values.postgres.replicas }}
+  strategy:
+    type: {{ .Values.postgres.upgradeStrategy }}
+  selector:
+    matchLabels:
+      app: postgres
+  template:
+    metadata:
+      labels:
+        app: postgres
+    spec:
+      {{- with .Values.postgres.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.nodeSelector }}
+      nodeSelector: {{- .Values.nodeSelector | toYaml | nindent 8 }}
+      {{- end }}
+      containers:
+      - name: postgres
+        image: {{ .Values.postgres.image.name }}:{{ .Values.postgres.image.tag }}
+        imagePullPolicy: IfNotPresent
+        resources:
+          #limits:
+          #  memory: {{ .Values.resources.limits.memory }}
+          #  cpu: {{ .Values.resources.limits.cpu }}
+          requests:
+            memory: {{ .Values.resources.requests.memory }}
+            cpu: {{ .Values.resources.requests.cpu }}
+        env:
+          - name: "POSTGRES_PASSWORD"
+            value: {{ .Values.envs.postgres_password }}
+          - name: "POSTGRES_HOST_AUTH_METHOD"
+            value: {{ .Values.envs.postgres_host_auth_method }}
+          - name: "POSTGRES_USER"
+            value: {{ .Values.envs.postgres_user }}
+          - name: "POSTGRES_DB"
+            value: {{ .Values.envs.postgres_db }}
+          - name: "PGDATA"
+            value: /postgres_data/postgres
+        volumeMounts:
+        - mountPath: /postgres_data
+          name: {{ .Values.postgres.storage.volumeName }}
+      initContainers:
+      - name: remove-pid
+        image: {{ .Values.postgres.image.name }}:{{ .Values.postgres.image.tag }}
+        command: ['/pg_remove_pid.sh']
+        imagePullPolicy: IfNotPresent
+        volumeMounts:
+        - mountPath: /postgres_data
+          name: {{ .Values.postgres.storage.volumeName }}
+      {{- with .Values.postgres.tolerations }} 
+      tolerations:
+        {{ toYaml . | nindent 8 }}
+      {{- end }}
+      {{- if .Values.affinity }}
+      affinity: {{- .Values.affinity | toYaml | nindent 10 }}
+      {{- end }}
+      volumes:
+      - name: {{ .Values.postgres.storage.volumeName }}
+        persistentVolumeClaim:
+          claimName: {{ .Values.postgres.storage.volumeName }}
+      restartPolicy: Always
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: postgres
+  namespace: {{ .Values.common.namespace }}
+spec:
+  selector:
+    app: postgres
+  type: ClusterIP
+  ports:
+    - name: http
+      protocol: TCP
+      port: 5432
+---

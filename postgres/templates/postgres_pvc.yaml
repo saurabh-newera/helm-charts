@@ -1,0 +1,32 @@
+{{if eq .Values.postgres.storage.enabled true}}
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: {{ .Values.postgres.storage.volumeName }}
+  namespace: {{ .Values.common.namespace }}
+spec:
+  storageClassName: {{ .Values.postgres.storage.storageClassName }}
+  accessModes:
+    - {{ .Values.postgres.storage.accessMode }}
+  resources:
+    requests:
+      storage: {{ .Values.postgres.storage.size }}
+---
+{{ if eq .Values.postgres.storage.createPV true }}
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: {{ .Values.postgres.storage.volumeName }}
+  namespace: {{ .Values.common.namespace }}
+spec:
+  storageClassName: {{ .Values.postgres.storage.storageClassName }}
+  capacity:
+     storage: {{ .Values.postgres.storage.size }}
+  accessModes:
+    - {{ .Values.postgres.storage.accessMode }}
+  hostPath:
+    path: {{ .Values.postgres.storage.path }}
+    type: DirectoryOrCreate
+---
+{{ end }}
+{{ end }}

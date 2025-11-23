@@ -1,0 +1,40 @@
+postgres:
+  image:
+    name: postgres
+    tag: "16.1"
+  replicas: 1
+  upgradeStrategy: Recreate
+  storage:
+    enabled: true
+    createPV: false
+    volumeName: test-pg
+    size: 10Gi
+    storageClassName: longhorn
+    accessMode: ReadWriteMany
+    path: /test_pg
+  tolerations:
+    - key: "node-role.kubernetes.io/master"
+      operator: "Exists"
+      effect: "NoSchedule"
+    - key: "node-role.kubernetes.io/control-plane"
+      operator: "Exists"
+      effect: "NoSchedule"
+
+kubernetesClusterDomain: cluster.local
+
+common:
+  namespace: saurabh
+
+resources:
+  requests:
+    memory: "500Mi"
+    cpu: "250m"
+  limits:
+    memory: "1Gi"
+    cpu: "2"
+
+envs:
+  postgres_password: "postgres"
+  postgres_host_auth_method: "trust"
+  postgres_user: "postgres"
+  postgres_db: "test"
