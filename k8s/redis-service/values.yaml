@@ -1,0 +1,43 @@
+# Default values for redis-service
+
+# Namespace to deploy to
+namespace: default
+
+replicaCount: 1
+
+image:
+  repository: redis
+  tag: "7.2.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 6379
+  targetPort: 6379
+
+resources:
+  limits:
+    cpu: 200m
+    memory: 256Mi
+  requests:
+    cpu: 100m
+    memory: 128Mi
+
+# Environment variables
+env:
+  REDIS_MAXMEMORY: "128mb"
+  REDIS_MAXMEMORY_POLICY: "allkeys-lru"
+  REDIS_LOGLEVEL: "notice"
+
+# Redis configuration arguments
+redisArgs:
+  - "--maxmemory"
+  - "128mb"
+  - "--maxmemory-policy"
+  - "allkeys-lru"
+
+# Additional labels for all resources
+labels: {}
+
+# Pod annotations
+podAnnotations: {}

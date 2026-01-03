@@ -1,0 +1,36 @@
+# Default values for nginx-service
+
+# Namespace to deploy to
+namespace: default
+
+replicaCount: 1
+
+image:
+  repository: nginx
+  tag: "1.27.0"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+# Environment variables
+env:
+  NGINX_HOST: localhost
+  NGINX_PORT: "80"
+  APP_ENV: production
+
+# Additional labels for all resources
+labels: {}
+
+# Pod annotations
+podAnnotations: {}

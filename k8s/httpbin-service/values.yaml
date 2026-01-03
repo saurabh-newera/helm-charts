@@ -1,0 +1,36 @@
+# Default values for httpbin-service
+
+# Namespace to deploy to
+namespace: default
+
+replicaCount: 1
+
+image:
+  repository: kennethreitz/httpbin
+  tag: "latest"
+  pullPolicy: IfNotPresent
+
+service:
+  type: ClusterIP
+  port: 80
+  targetPort: 80
+
+resources:
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+    cpu: 50m
+    memory: 64Mi
+
+# Environment variables
+env:
+  GUNICORN_CMD_ARGS: "--capture-output --error-logfile - --access-logfile - --access-logformat '%(h)s %(t)s %(r)s %(s)s'"
+  APP_ENV: production
+  LOG_LEVEL: info
+
+# Additional labels for all resources
+labels: {}
+
+# Pod annotations
+podAnnotations: {}
