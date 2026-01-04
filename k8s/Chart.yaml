@@ -1,0 +1,14 @@
+apiVersion: v2
+name: store-stack
+version: 0.1.0
+type: application
+dependencies:
+  - name: nginx-service
+    version: 0.1.0
+    repository: file://./nginx-service
+  - name: redis-service
+    version: 0.1.0
+    repository: file://./redis-service
+  - name: httpbin-service
+    version: 0.1.0
+    repository: file://./httpbin-service
