@@ -41,5 +41,7 @@ jobs:
         with:
           charts_dir: k8s
           skip_existing: true
+          mark_as_latest: false
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
+          CR_SKIP_EXISTING: "true"
