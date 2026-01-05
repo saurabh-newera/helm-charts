@@ -36,6 +36,18 @@ jobs:
           helm repo add bitnami https://charts.bitnami.com/bitnami || true
           helm repo update
 
+      - name: Build umbrella chart dependencies
+        run: |
+          echo "Building store-stack umbrella chart..."
+          if [ -f "k8s/store-stack/Chart.yaml" ]; then
+            cd k8s/store-stack
+            helm dependency update
+            cd ../..
+            echo "✓ store-stack dependencies updated"
+          else
+            echo "⚠ store-stack chart not found, skipping"
+          fi
+
       - name: Create gh-pages branch if it doesn't exist
         run: |
           if ! git ls-remote --heads origin gh-pages | grep -q gh-pages; then
