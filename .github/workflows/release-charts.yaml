@@ -36,6 +36,19 @@ jobs:
           helm repo add bitnami https://charts.bitnami.com/bitnami || true
           helm repo update
 
+      - name: Create gh-pages branch if it doesn't exist
+        run: |
+          if ! git ls-remote --heads origin gh-pages | grep -q gh-pages; then
+            echo "Creating gh-pages branch..."
+            git checkout --orphan gh-pages
+            git rm -rf .
+            echo "# Helm Charts Repository" > README.md
+            git add README.md
+            git commit -m "Initialize gh-pages branch"
+            git push origin gh-pages
+            git checkout main
+          fi
+
       - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
