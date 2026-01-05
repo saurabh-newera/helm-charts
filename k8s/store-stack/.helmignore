@@ -1,0 +1,11 @@
+# Helm defaults
+*.swp
+*.bak
+*.tmp
+*.orig
+*~
+.DS_Store
+
+# Build artifacts
+charts/
+Chart.lock

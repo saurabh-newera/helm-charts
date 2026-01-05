@@ -1,0 +1,21 @@
+apiVersion: v2
+name: store-stack
+description: Complete store application stack (nginx, redis, httpbin)
+type: application
+version: 1.4.0
+appVersion: "1.4"
+maintainers:
+  - name: POC Team
+
+dependencies:
+  - name: nginx-service
+    version: 0.2.0
+    repository: https://saurabh-newera.github.io/helm-charts
+  
+  - name: redis-service
+    version: 0.2.0
+    repository: https://saurabh-newera.github.io/helm-charts
+  
+  - name: httpbin-service
+    version: 0.2.0
+    repository: https://saurabh-newera.github.io/helm-charts
