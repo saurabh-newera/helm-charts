@@ -34,18 +34,15 @@ jobs:
       - name: Add Helm repos (if dependencies exist)
         run: |
           helm repo add bitnami https://charts.bitnami.com/bitnami || true
+          helm repo add self https://saurabh-newera.github.io/helm-charts || true
           helm repo update
 
-      - name: Build umbrella chart dependencies
+      - name: Temporarily move umbrella charts aside
         run: |
-          echo "Building store-stack umbrella chart..."
-          if [ -f "k8s/store-stack/Chart.yaml" ]; then
-            cd k8s/store-stack
-            helm dependency update
-            cd ../..
-            echo "✓ store-stack dependencies updated"
-          else
-            echo "⚠ store-stack chart not found, skipping"
+          mkdir -p /tmp/umbrella-charts
+          if [ -d "k8s/store-stack" ]; then
+            mv k8s/store-stack /tmp/umbrella-charts/
+            echo "✓ Moved store-stack aside for separate processing"
           fi
 
       - name: Create gh-pages branch if it doesn't exist
@@ -61,7 +58,7 @@ jobs:
             git checkout main
           fi
 
-      - name: Run chart-releaser
+      - name: Run chart-releaser (base charts only)
         uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: k8s
@@ -70,3 +67,25 @@ jobs:
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
           CR_SKIP_EXISTING: "true"
+
+      - name: Build and publish umbrella charts
+        run: |
+          if [ -d "/tmp/umbrella-charts/store-stack" ]; then
+            echo "Building store-stack umbrella chart..."
+            
+            # Move it back
+            mv /tmp/umbrella-charts/store-stack k8s/
+            
+            # Update repo to get newly published charts
+            helm repo update
+            
+            # Build dependencies
+            cd k8s/store-stack
+            helm dependency update
+            cd ../..
+            
+            # Package it
+            helm package k8s/store-stack -d .cr-release-packages
+            
+            echo "✓ store-stack packaged successfully"
+          fi
