@@ -434,6 +434,5 @@ MIT License - see individual chart directories for details.
 
 ---
 
-**Repository**: https://github.com/saurabh-newera
 **Helm Repository**: https://saurabh-newera.github.io/helm-charts  
 **GitOps Configuration**: https://github.com/saurabh-newera/gitops-fleet-2
