@@ -1,0 +1,54 @@
+apiVersion: v1
+entries:
+  httpbin-service:
+  - apiVersion: v2
+    appVersion: 0.9.2
+    created: "2026-01-05T04:45:20.362753981Z"
+    description: A simple HTTP request/response testing service Helm chart for Fleet
+      POC
+    digest: aab2a58d07980ccfc04638537cb6141421eb5e3b900dd06c16ce0f52dd7277ff
+    maintainers:
+    - name: POC Team
+    name: httpbin-service
+    type: application
+    urls:
+    - https://github.com/saurabh-newera/helm-charts/releases/download/httpbin-service-0.3.0/httpbin-service-0.3.0.tgz
+    version: 0.3.0
+  nginx-service:
+  - apiVersion: v2
+    appVersion: 1.27.0
+    created: "2026-01-05T04:45:20.501586499Z"
+    description: A simple Nginx web server Helm chart for Fleet POC
+    digest: 5aa4d9f00df3ec1633ded5e11d08fb5dfb6760da4c528c2f8c717dc568b1201b
+    maintainers:
+    - name: POC Team
+    name: nginx-service
+    type: application
+    urls:
+    - https://github.com/saurabh-newera/helm-charts/releases/download/nginx-service-0.3.0/nginx-service-0.3.0.tgz
+    version: 0.3.0
+  postgres:
+  - apiVersion: v2
+    appVersion: "16.1"
+    created: "2026-01-05T04:45:20.640488804Z"
+    description: A Helm chart for Kubernetes
+    digest: 12067c21e53c70ce7d1edf9e14936f98d9a240db9f48b6d67936086c3648a591
+    name: postgres
+    type: application
+    urls:
+    - https://github.com/saurabh-newera/helm-charts/releases/download/postgres-1.2.0/postgres-1.2.0.tgz
+    version: 1.2.0
+  redis-service:
+  - apiVersion: v2
+    appVersion: 7.2.0
+    created: "2026-01-05T04:45:20.786171006Z"
+    description: A simple Redis in-memory data store Helm chart for Fleet POC
+    digest: b552fe7a96f00616a21719be55f2515571620644d11a315a43d6a74b9ed13eb9
+    maintainers:
+    - name: POC Team
+    name: redis-service
+    type: application
+    urls:
+    - https://github.com/saurabh-newera/helm-charts/releases/download/redis-service-0.3.0/redis-service-0.3.0.tgz
+    version: 0.3.0
+generated: "2026-01-05T04:45:20.786177678Z"
