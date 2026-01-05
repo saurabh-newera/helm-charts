@@ -2,7 +2,7 @@ apiVersion: v2
 name: redis-service
 description: A simple Redis in-memory data store Helm chart for Fleet POC
 type: application
-version: 0.2.0
+version: 0.3.0
 appVersion: "7.2.0"
 maintainers:
   - name: POC Team
