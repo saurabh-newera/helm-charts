@@ -81,11 +81,24 @@ jobs:
             
             # Build dependencies
             cd k8s/store-stack
+            
+            # Ensure charts directory exists
+            mkdir -p charts
+            
+            echo "Running helm dependency update..."
             helm dependency update
+            
+            echo "Contents of charts/ directory:"
+            ls -la charts/ || echo "charts/ directory is empty or doesn't exist"
+            
+            echo "Contents of current directory:"
+            ls -la
+            
             cd ../..
             
-            # Package it
-            helm package k8s/store-stack -d .cr-release-packages
+            # Try packaging with verbose output
+            echo "Packaging store-stack..."
+            helm package k8s/store-stack -d .cr-release-packages --debug
             
             echo "✓ store-stack packaged successfully"
           fi
