@@ -51,4 +51,27 @@ entries:
     urls:
     - https://github.com/saurabh-newera/helm-charts/releases/download/redis-service-0.3.0/redis-service-0.3.0.tgz
     version: 0.3.0
-generated: "2026-01-05T04:45:20.786177678Z"
+  store-stack:
+  - apiVersion: v2
+    appVersion: "1.4"
+    created: "2026-01-06T02:00:36.807145924Z"
+    dependencies:
+    - name: nginx-service
+      repository: https://saurabh-newera.github.io/helm-charts
+      version: 0.3.0
+    - name: redis-service
+      repository: https://saurabh-newera.github.io/helm-charts
+      version: 0.3.0
+    - name: httpbin-service
+      repository: https://saurabh-newera.github.io/helm-charts
+      version: 0.3.0
+    description: Complete store application stack (nginx, redis, httpbin)
+    digest: d98aae3890a25b6915575df20ed1a90677aa9038b5e0de5661c7da2f9c50b68c
+    maintainers:
+    - name: POC Team
+    name: store-stack
+    type: application
+    urls:
+    - https://github.com/saurabh-newera/helm-charts/releases/download/store-stack-1.4.0/store-stack-1.4.0.tgz
+    version: 1.4.0
+generated: "2026-01-06T02:00:36.807157495Z"
