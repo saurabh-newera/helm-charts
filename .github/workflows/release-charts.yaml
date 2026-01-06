@@ -108,20 +108,8 @@ jobs:
             echo "Contents of charts/ directory:"
             ls -la charts/
             
-            # Extract the tgz files
-            echo "Extracting chart dependencies..."
-            cd charts
-            for chart in *.tgz; do
-              if [ -f "$chart" ]; then
-                tar -xzf "$chart"
-                rm "$chart"
-                echo "✓ Extracted $chart"
-              fi
-            done
-            cd ..
-            
-            echo "Contents of charts/ directory after extraction:"
-            ls -la charts/
+            # Don't extract or remove the .tgz files - Helm needs them as-is
+            echo "✓ Dependencies are ready for packaging"
             
             # Package the umbrella chart (stay in current directory)
             echo "Packaging store-stack..."
