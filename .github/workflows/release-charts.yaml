@@ -31,93 +31,15 @@ jobs:
         with:
           version: v3.13.0
 
-      - name: Add Helm repos (if dependencies exist)
+      - name: Add Helm repos
         run: |
-          helm repo add bitnami https://charts.bitnami.com/bitnami || true
           helm repo add self https://saurabh-newera.github.io/helm-charts || true
           helm repo update
 
-      - name: Temporarily move umbrella charts aside
-        run: |
-          mkdir -p /tmp/umbrella-charts
-          if [ -d "k8s/store-stack" ]; then
-            mv k8s/store-stack /tmp/umbrella-charts/
-            echo "✓ Moved store-stack aside for separate processing"
-          fi
-
-      - name: Create gh-pages branch if it doesn't exist
-        run: |
-          if ! git ls-remote --heads origin gh-pages | grep -q gh-pages; then
-            echo "Creating gh-pages branch..."
-            git checkout --orphan gh-pages
-            git rm -rf .
-            echo "# Helm Charts Repository" > README.md
-            git add README.md
-            git commit -m "Initialize gh-pages branch"
-            git push origin gh-pages
-            git checkout main
-          fi
-
-      - name: Run chart-releaser (base charts only)
+      - name: Run chart-releaser
         uses: helm/chart-releaser-action@v1.6.0
         with:
           charts_dir: k8s
           skip_existing: true
-          mark_as_latest: false
         env:
           CR_TOKEN: "${{ secrets.GITHUB_TOKEN }}"
-          CR_SKIP_EXISTING: "true"
-
-      - name: Build and publish umbrella charts
-        run: |
-          if [ -d "/tmp/umbrella-charts/store-stack" ]; then
-            echo "Building store-stack umbrella chart..."
-            
-            # Move it back
-            mv /tmp/umbrella-charts/store-stack k8s/
-            
-            # Wait for GitHub to make releases available (they were just created)
-            echo "Waiting 30 seconds for GitHub releases to be available..."
-            sleep 30
-            
-            # Update repo to get newly published charts
-            helm repo update
-            
-            # Build dependencies with retry logic
-            cd k8s/store-stack
-            mkdir -p charts
-            
-            echo "Running helm dependency update with retry..."
-            for i in {1..3}; do
-              echo "Attempt $i of 3..."
-              if helm dependency update; then
-                echo "✓ Dependencies downloaded successfully"
-                break
-              else
-                if [ $i -lt 3 ]; then
-                  echo "Failed, waiting 20 seconds before retry..."
-                  sleep 20
-                  helm repo update
-                else
-                  echo "✗ Failed after 3 attempts"
-                  exit 1
-                fi
-              fi
-            done
-            
-            echo "Contents of charts/ directory:"
-            ls -la charts/
-            
-            # Don't extract or remove the .tgz files - Helm needs them as-is
-            echo "✓ Dependencies are ready for packaging"
-            
-            # Package the umbrella chart (stay in current directory)
-            echo "Packaging store-stack..."
-            mkdir -p ../../.cr-release-packages
-            helm package . -d ../../.cr-release-packages
-            
-            cd ../..
-            
-            echo "✓ store-stack packaged successfully"
-            ls -la .cr-release-packages/
-          fi

@@ -1,0 +1,20 @@
+# Helm build artifacts
+charts/
+*.tgz
+Chart.lock
+
+# Helm defaults
+*.swp
+*.bak
+*.tmp
+*.orig
+*~
+.DS_Store
+
+# IDE
+.vscode/
+.idea/
+*.iml
+
+# OS
+Thumbs.db
