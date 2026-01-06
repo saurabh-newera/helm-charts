@@ -76,23 +76,46 @@ jobs:
             # Move it back
             mv /tmp/umbrella-charts/store-stack k8s/
             
+            # Wait for GitHub to make releases available (they were just created)
+            echo "Waiting 30 seconds for GitHub releases to be available..."
+            sleep 30
+            
             # Update repo to get newly published charts
             helm repo update
             
-            # Build dependencies
+            # Build dependencies with retry logic
             cd k8s/store-stack
-            
-            # Ensure charts directory exists
             mkdir -p charts
             
-            echo "Running helm dependency update..."
-            helm dependency update
+            echo "Running helm dependency update with retry..."
+            for i in {1..3}; do
+              echo "Attempt $i of 3..."
+              if helm dependency update; then
+                echo "✓ Dependencies downloaded successfully"
+                break
+              else
+                if [ $i -lt 3 ]; then
+                  echo "Failed, waiting 20 seconds before retry..."
+                  sleep 20
+                  helm repo update
+                else
+                  echo "✗ Failed after 3 attempts"
+                  exit 1
+                fi
+              fi
+            done
             
             echo "Contents of charts/ directory:"
-            ls -la charts/ || echo "charts/ directory is empty or doesn't exist"
+            ls -la charts/
             
-            echo "Contents of current directory:"
-            ls -la
+            cd ../..
+            
+            # Package the umbrella chart
+            echo "Packaging store-stack..."
+            helm package k8s/store-stack -d .cr-release-packages
+            
+            echo "✓ store-stack packaged successfully"
+          fi
             
             cd ../..
             
