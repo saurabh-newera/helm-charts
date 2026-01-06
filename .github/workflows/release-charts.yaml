@@ -108,20 +108,13 @@ jobs:
             echo "Contents of charts/ directory:"
             ls -la charts/
             
-            cd ../..
-            
-            # Package the umbrella chart
+            # Package the umbrella chart (stay in current directory)
             echo "Packaging store-stack..."
-            helm package k8s/store-stack -d .cr-release-packages
-            
-            echo "✓ store-stack packaged successfully"
-          fi
+            mkdir -p ../../.cr-release-packages
+            helm package . -d ../../.cr-release-packages
             
             cd ../..
             
-            # Try packaging with verbose output
-            echo "Packaging store-stack..."
-            helm package k8s/store-stack -d .cr-release-packages --debug
-            
             echo "✓ store-stack packaged successfully"
+            ls -la .cr-release-packages/
           fi
