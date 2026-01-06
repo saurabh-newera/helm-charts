@@ -2,8 +2,8 @@ apiVersion: v2
 name: store-stack
 description: Complete store application stack (nginx, redis, httpbin)
 type: application
-version: 1.4.0
-appVersion: "1.4"
+version: 1.5.0
+appVersion: "1.5"
 maintainers:
   - name: POC Team
 
